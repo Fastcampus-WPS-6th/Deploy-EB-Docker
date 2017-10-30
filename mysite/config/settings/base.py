@@ -13,7 +13,7 @@ import json
 import os
 
 # Paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
@@ -66,7 +66,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Others
 WSGI_APPLICATION = 'config.wsgi.application'
-DATABASES = config_secret['databases']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
