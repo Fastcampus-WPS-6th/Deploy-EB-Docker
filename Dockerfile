@@ -1,3 +1,43 @@
+FROM        azelf/base
+MAINTAINER  dev@azelf.com
+
+ENV         LANG C.UTF-8
+ENV         DJANGO_SETTINGS_MODULE config.settings.dev
+
+# 파일 복사 및 requirements설치
+COPY        . /srv/app
+RUN         /root/.pyenv/versions/app/bin/pip install -r \
+            /srv/app/requirements.txt
+
+# pyenv local설정
+WORKDIR     /srv/app
+RUN         pyenv local app
+
+# Nginx
+RUN         cp /srv/app/.config/dev/nginx/nginx.conf \
+                /etc/nginx/nginx.conf
+RUN         cp /srv/app/.config/dev/nginx/app.conf \
+                /etc/nginx/sites-available/
+RUN         rm -rf /etc/nginx/sites-enabled/*
+RUN         ln -sf /etc/nginx/sites-available/app.conf \
+                    /etc/nginx/sites-enabled/app.conf
+
+# uWSGI
+RUN         mkdir -p /var/log/uwsgi/app
+
+# manage.py
+WORKDIR     /srv/app/mysite
+RUN         /root/.pyenv/versions/app/bin/python manage.py collectstatic --noinput
+RUN         /root/.pyenv/versions/app/bin/python manage.py migrate --noinput
+
+# supervisor
+RUN         cp /srv/app/.config/dev/supervisor/* \
+                /etc/supervisor/conf.d/
+CMD         supervisord -n
+
+EXPOSE      80
+
+
 # Dockerfile.dev를 작성 (Dockerfile.local을 복붙, local도 경로 수정)
 #    설정모듈은 config.settings.dev사용
 #    uWSGI로 전달할 WSGI모듈은 wsgi.dev사용
@@ -32,3 +72,7 @@
 # 7. uWSGI와 Nginx를 실행해서 외부포트(8012)로 접속했을때 내부의 80번포트를 통해 장고가 실행되는지 확인
 # 8. supervisor를 실행해서 프로세스들이 정상작동하는지 확인
 # 9. 실행했던 이미지를 종료하고 위에서 실행한 명령어들로 Dockerfile.dev를 작성하고 실행
+
+# 바뀐내용을 배포
+# 이후 eb에 해당하는 url로 접속해서 잘 되는지 테스트
+# 안 된다면 로그를 확인
