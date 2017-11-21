@@ -27,6 +27,13 @@ SECRET_KEY = ''.join(
 
 LOGGING = {
     'version': 1,
+    'disable_existing_loggers': True,
+    'root': {
+        'level': 'WARNING',
+        'handlers': [
+            'sentry',
+        ],
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
@@ -35,7 +42,14 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join(ROOT_DIR, '.log', 'django.log'),
-        }
+        },
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'tags': {
+                'custom-tag': 'x',
+            },
+        },
     },
     'loggers': {
         'django': {
@@ -46,5 +60,8 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'member': {
+            # member.views.어딘가
+        }
     },
 }

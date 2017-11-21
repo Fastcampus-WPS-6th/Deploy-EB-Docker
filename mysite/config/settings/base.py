@@ -13,6 +13,8 @@ import json
 import os
 
 # Paths
+import raven
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -65,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'raven.contrib.django.raven_compat',
     'storages',
 
     'member',
@@ -109,3 +112,10 @@ USE_TZ = True
 
 SECRET_KEY = config_secret_common['django']['secret_key']
 DEBUG = True
+
+RAVEN_CONFIG = {
+    'dsn': 'https://35e452a991f04ad9b150295719db2137:438e6ed28b334358947e5ce4bf5291d9@sentry.io/248299',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
+}
