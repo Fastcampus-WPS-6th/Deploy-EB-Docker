@@ -40,6 +40,9 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'
 
 # Auth
+SUPERUSER_USERNAME = config_secret_common['django']['superuser']['username']
+SUPERUSER_PASSWORD = config_secret_common['django']['superuser']['password']
+SUPERUSER_EMAIL = config_secret_common['django']['superuser']['email']
 AUTH_USER_MODEL = 'member.User'
 AUTH_PASSWORD_VALIDATORS = [
     {
